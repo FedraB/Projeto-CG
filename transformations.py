@@ -1,15 +1,28 @@
-import numpy as np
+import vector_operations as vop
 
 def transformar_mundial_para_vista(vertices, N, V, C):
-    N = np.array(N) / np.linalg.norm(N)
-    V = np.array(V)
-    U = np.cross(V, N)
-    U = U / np.linalg.norm(U)
-    V = np.cross(N, U)
-    # Matriz de transformação
-    Mv = np.array([U, V, N])
-    T = np.array(C)
-    vertices_vista = [Mv.dot(vertex - T) for vertex in vertices]
+    """ Transforma os vértices das coordenadas mundiais para a vista """
+    # 1. Normalizar os vetores N, U e V
+    N = vop.normalizar(N)
+    V = vop.normalizar(V)
+    U = vop.normalizar(vop.produto_vetorial(V, N))
+    V = vop.produto_vetorial(N, U)  # Corrige V para ser ortogonal
+    
+    # 2. Criar a matriz de rotação (base da câmera)
+    Mv = [
+        U,  # primeira linha (vetor U)
+        V,  # segunda linha (vetor V)
+        N   # terceira linha (vetor N)
+    ]
+    
+    # 3. Transformar os vértices
+    vertices_vista = []
+    for vertice in vertices:
+        # Transladar o ponto com relação ao centro C
+        v_transladado = vop.subtrair_vetores(vertice, C)
+        # Multiplicar a matriz de rotação por esse vetor
+        v_vista = vop.multiplicar_matriz_vetor(Mv, v_transladado)
+        vertices_vista.append(v_vista)
     return vertices_vista
 
 def projecao_perspectiva(vertices_vista, d, hx, hy):
