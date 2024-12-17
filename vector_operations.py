@@ -3,7 +3,7 @@ import math
 def normalizar(v):
     """ Normaliza o vetor v """
     norma = math.sqrt(sum(coord ** 2 for coord in v))
-    return [coord / norma for coord in v]
+    return [coord / norma for coord in v] if norma != 0 else [0] * len(v)
 
 def produto_escalar(v1, v2):
     """ Produto escalar de dois vetores """
@@ -38,3 +38,15 @@ def multiplicar_matrizes(m1, m2):
             nova_linha.append(produto_escalar(linha, coluna))
         resultado.append(nova_linha)
     return resultado
+
+def ceil(x):
+    """ Retorna o menor inteiro maior ou igual a x """
+    return int(x) if x == int(x) else int(x) + 1 if x > 0 else int(x)
+
+def floor(x):
+    """ Retorna o maior inteiro menor ou igual a x """
+    return int(x) if x == int(x) else int(x) - 1 if x < 0 else int(x)
+
+def round_num(x):
+    """ Arredonda o número x para o inteiro mais próximo """
+    return int(x + 0.5) if x > 0 else int(x - 0.5)
