@@ -8,6 +8,15 @@ This project implements a 3D rendering pipeline that reads a triangular mesh of 
 - Reads a triangular mesh from a text file.
 - The file format specifies the number of vertices, the number of triangles, vertex coordinates (x, y, z), and the vertex indices for each triangle.
 
+Example:
+```
+3 1
+50.0000 0.0000 0.000
+0 50 0
+0 0 50
+1 2 3
+```
+
 ### Camera Parameters:
 
 - Loads virtual camera parameters from a separate text file.
@@ -17,6 +26,16 @@ This project implements a 3D rendering pipeline that reads a triangular mesh of 
 - Up vector (V)
 - Distance to the projection plane (d)
 Horizontal and vertical scaling factors (hx, hy)
+
+Example:
+```
+0 1 -0.66
+0 -1 -1
+6
+2
+2
+0 -500 500
+```
 
 ### Real-Time Update:
 
@@ -34,7 +53,20 @@ Horizontal and vertical scaling factors (hx, hy)
 - White pixels represent the filled triangles on the screen.
 - All other pixels are black.
 
-## Usage
+## Getting Started
+
+### Prerequisites
+
+Make sure you have **Python 3.x** installed 
+
+### Usage
 - Prepare the mesh and camera parameter files in the specified format.
-- Run the application.
-- Modify camera parameters as needed and reload them with a single key press.
+- Run the application with:
+```bash
+python main.py
+```
+- Modify objects or the camera parameters as needed and reload them with a single key press on **'R'**
+
+### Controls
+
+-  to reload the camera parameters and re-render the object without restarting the program.

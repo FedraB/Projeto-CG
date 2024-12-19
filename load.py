@@ -12,7 +12,7 @@ def carregar_malha(arquivo_malha):
     # Coordenadas dos vértices
     vertices = [list(map(float, linha.split())) for linha in linhas[1:n_vertices + 1]]
     
-    # Índices dos triângulos (convertendo para indexação baseada em 0)
+    # Índices dos triângulos
     triangulos = [list(map(lambda x: int(x) - 1, linha.split())) 
                   for linha in linhas[n_vertices + 1:]]
     

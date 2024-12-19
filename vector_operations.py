@@ -28,17 +28,6 @@ def multiplicar_matriz_vetor(matriz, vetor):
     """ Multiplica uma matriz 3x3 por um vetor 3D """
     return [produto_escalar(linha, vetor) for linha in matriz]
 
-def multiplicar_matrizes(m1, m2):
-    """ Multiplicação de duas matrizes 3x3 """
-    resultado = []
-    for linha in m1:
-        nova_linha = []
-        for j in range(len(m2[0])):
-            coluna = [m2[i][j] for i in range(len(m2))]
-            nova_linha.append(produto_escalar(linha, coluna))
-        resultado.append(nova_linha)
-    return resultado
-
 def ceil(x):
     """ Retorna o menor inteiro maior ou igual a x """
     return int(x) if x == int(x) else int(x) + 1 if x > 0 else int(x)
