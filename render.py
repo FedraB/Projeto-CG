@@ -57,33 +57,45 @@ def scanline_triangle(vertices):
             pixels.add((x, y))
     return pixels
 
-def rasterizar_flat_bottom(v1, v2, v3, pixels):
-    """ Preenche o triângulo com base plana inferior. """
-    inv_slope1 = (v2[0] - v1[0]) / (v2[1] - v1[1])
-    inv_slope2 = (v3[0] - v1[0]) / (v3[1] - v1[1])
-    x1 = x2 = v1[0]
-    
-    for y in range(v1[1], v2[1] + 1):
-        for x in range(vop.round_num(x1), vop.round_num(x2) + 1):
-            pixels.add((x, y))
-        x1 += inv_slope1
-        x2 += inv_slope2
+def calcular_iluminacao(phong_params, ponto, normal):
+    """Calcula a cor resultante no ponto dado a iluminação de Phong."""
+    N, V, C, Lamb, Ka, Ll, Pl, Kd, Od, Ks, η = phong_params
 
-def rasterizar_flat_top(v1, v2, v3, pixels):
-    """ Preenche o triângulo com base plana superior. """
-    inv_slope1 = (v3[0] - v1[0]) / (v3[1] - v1[1])
-    inv_slope2 = (v3[0] - v2[0]) / (v3[1] - v2[1])
-    x1 = x2 = v3[0]
-    
-    for y in range(v3[1], v1[1] - 1, -1):
-        for x in range(vop.round_num(x1), vop.round_num(x2) + 1):
-            pixels.add((x, y))
-        x1 -= inv_slope1
-        x2 -= inv_slope2
-    
-def scanline_mesh(triangulos):
-    """ Rasteriza todos os triângulos de uma malha. """
+    N = vop.normalizar(normal)
+    V = vop.normalizar(vop.subtrair_vetores(C, ponto))
+    L = vop.normalizar(vop.subtrair_vetores(Pl, ponto))
+    R = vop.subtrair_vetores(vop.multiplicar_por_escalar(N, 2 * vop.produto_escalar(N, L)), L)
+
+    if max(Lamb) > 1 or max(Ll) > 1:
+        Lamb = [min(1, max(0, c / 255)) for c in Lamb]
+        Ll = [min(1, max(0, c / 255)) for c in Ll]
+
+    Iamb = [Ka * Lamb[i] for i in range(3)]
+
+    dot_NL = max(vop.produto_escalar(N, L), 0)
+    Idif = [Kd[i] * Od[i] * Ll[i] * dot_NL for i in range(3)]
+
+    dot_RV = max(vop.produto_escalar(R, V), 0) ** η
+    Iesp = [Ks * Ll[i] * dot_RV for i in range(3)]
+
+    cor = [min(255, int((Iamb[i] + Idif[i] + Iesp[i]) * 255)) for i in range(3)]
+    return f'#{cor[0]:02x}{cor[1]:02x}{cor[2]:02x}'
+
+def colorir_triangulo(triangulo, normal, phong_params):
+    """Aplica iluminação de Phong no triângulo e retorna os pixels coloridos."""
+    pixels = scanline_triangle(triangulo)
+    colorized_pixels = set()
+
+    for x, y in pixels:
+        ponto = (x, y, 0)
+        cor = calcular_iluminacao(phong_params, ponto, normal)
+        colorized_pixels.add(((x, y), cor))
+
+    return colorized_pixels
+
+def scanline_mesh(triangulos, normal, phong_params):
+    """Rasteriza todos os triângulos de uma malha com iluminação de Phong e texturização."""
     pixels = set()
     for triangulo in triangulos:
-        pixels.update(scanline_triangle(triangulo))
+        pixels.update(colorir_triangulo(triangulo, normal, phong_params))
     return pixels

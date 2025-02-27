@@ -18,12 +18,12 @@ def carregar_malha(arquivo_malha):
     
     return vertices, triangulos
 
-def carregar_parametros_camera(arquivo_camera):
+def carregar_parametros_camera_lighting(arquivo_camera):
     with open(arquivo_camera, 'r') as f:
         linhas = f.readlines()
     
     # Valida o formato do arquivo
-    if len(linhas) != 6:
+    if len(linhas) != 14:
         raise ValueError("O formato do arquivo de parâmetros da câmera está incorreto.")
     
     try:
@@ -33,8 +33,16 @@ def carregar_parametros_camera(arquivo_camera):
         d = float(linhas[2].split('=').pop().strip())
         hx = float(linhas[3].split('=').pop().strip())
         hy = float(linhas[4].split('=').pop().strip())
-        C = list(map(float, linhas[5].split('=').pop().strip().split()))
+        C = list(map(float, linhas[5].split('=').pop().strip().split()))    
+        Lamb = list(map(float, linhas[6].split('=').pop().strip().split()))   
+        Ka = float(linhas[7].split('=').pop().strip())
+        Ll = list(map(float, linhas[8].split('=').pop().strip().split()))   
+        Pl = list(map(float, linhas[9].split('=').pop().strip().split()))   
+        Kd = list(map(float, linhas[10].split('=').pop().strip().split()))   
+        Od = list(map(float, linhas[11].split('=').pop().strip().split()))   
+        Ks = float(linhas[12].split('=').pop().strip())
+        η = float(linhas[13].split('=').pop().strip())
     except (IndexError, ValueError):
         raise ValueError("Erro ao ler os parâmetros da câmera. Verifique o formato do arquivo.")
     
-    return N, V, d, hx, hy, C
+    return N, V, d, hx, hy, C, Lamb, Ka, Ll, Pl, Kd, Od, Ks, η
